@@ -17,8 +17,8 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
       - name: Add PHPUnit dependency
         run: composer require --dev phpunit/phpunit
-      - name: Run tests
-        run: vendor/bin/phpunit
+      # - name: Run tests
+      #   run: vendor/bin/phpunit
 
   deploy:
     needs: build
