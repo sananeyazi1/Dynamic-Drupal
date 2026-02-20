@@ -1,0 +1,41 @@
+scorm_field.scorm_sco:
+  path: '/scorm-field-scorm/player/sco/{scorm_sco}'
+  defaults:
+    _controller: '\Drupal\scorm_field\Controller\ScormFieldScormController::scormIntegrateSco'
+    _title: 'Integrate sco'
+  requirements:
+    _access: 'TRUE'
+    scorm_sco: \d+
+  options:
+    _admin_route: FALSE
+scorm_field.scorm_commit:
+  path: '/scorm-field-scorm/scorm/{scorm_id}/{scorm_sco_id}/{nid}/commit'
+  defaults:
+    _controller: '\Drupal\scorm_field\Controller\ScormFieldScormController::scormCommit'
+    _title: 'Scorm commit'
+  requirements:
+    _access: 'TRUE'
+    scorm_id: \d+
+    scorm_sco_id: \d+
+    nid: \d+
+  options:
+    _admin_route: FALSE
+scorm_field.decoupled:
+  path: '/scorm-field-decoupled/{node}'
+  defaults:
+    _title_callback: '\Drupal\scorm_field\Controller\ScormFieldDecoupledController::getTitle'
+    _controller: '\Drupal\scorm_field\Controller\ScormFieldDecoupledController::buildScormPlayer'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      node:
+        type: 'entity:node'
+    _custom_theme: 'stark'
+scorm_field.settings:
+  path: '/admin/config/system/scorm_field/settings'
+  defaults:
+    _title: 'Scorm field Settings'
+    _form: 'Drupal\scorm_field\Form\SettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

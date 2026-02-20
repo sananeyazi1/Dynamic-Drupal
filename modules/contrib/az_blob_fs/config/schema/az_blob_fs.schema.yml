@@ -1,0 +1,35 @@
+# Configuration settings.
+az_blob_fs.settings:
+  type: config_object
+  label: 'Azure Blog Storage config settings'
+  mapping:
+    az_blob_account_name:
+      type: string
+      label: 'Account Name'
+    az_blob_protocol:
+      type: string
+      label: 'Protocol'
+    az_blob_container_name:
+      type: string
+      label: 'Container Name'
+    az_blob_cdn_host_name:
+      type: string
+      label: 'CDN Hostname'
+    az_blob_local_ip:
+      type: string
+      label: 'Emulator Mode - Local Ip Address'
+    az_blob_local_port:
+      type: string
+      label: 'Emulator Mode - Local Port'
+    az_blob_local_emulator:
+      type: integer
+      label: 'Emulator Mode - Emulator Flag'
+    az_blob_account_key_name:
+      type: string
+      label: 'Account Key Name'
+    az_blob_initial_image_styles:
+      type: sequence
+      label: 'Initial Image Styles'
+    az_blob_queue_image_styles:
+      type: sequence
+      label: 'Queue Image Styles'

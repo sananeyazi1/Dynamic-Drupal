@@ -1,0 +1,7 @@
+plupload.test:
+  path: '/plupload-test'
+  defaults:
+    _form: 'Drupal\plupload_test\PluploadTestForm'
+  requirements:
+    # Do not enable in production.
+    _access: 'TRUE'

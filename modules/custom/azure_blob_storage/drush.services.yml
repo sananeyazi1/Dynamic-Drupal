@@ -1,0 +1,5 @@
+services:
+  azure_blob_storage.commands:
+    class: \Drupal\azure_blob_storage\Commands\AzureStorageDrush
+    tags:
+    - { name: drush.command }

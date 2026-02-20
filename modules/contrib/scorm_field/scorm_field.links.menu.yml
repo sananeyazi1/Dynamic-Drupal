@@ -1,0 +1,6 @@
+scorm_field.settings:
+  title: Scorm field Settings
+  parent: system.admin_config_system
+  route_name: scorm_field.settings
+  description: 'Define decoupled mode here.'
+  weight: 10

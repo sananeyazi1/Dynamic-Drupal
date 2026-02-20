@@ -1,0 +1,10 @@
+name: Scorm field
+type: module
+description: It implements a new SCORM field feature, allowing to load and play SCORM packages.
+core_version_requirement: ^8 || ^9 || ^10 
+configure: scorm_field.settings
+
+# Information added by Drupal.org packaging script on 2024-01-08
+version: '1.0.10'
+project: 'scorm_field'
+datestamp: 1704727438

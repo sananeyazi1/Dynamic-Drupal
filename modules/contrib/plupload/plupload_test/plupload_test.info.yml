@@ -1,0 +1,13 @@
+name: 'Plupload test'
+type: module
+description: 'Support module for plupload test.'
+package: Testing
+core_version_requirement: ^9 || ^10
+#hidden: true
+dependencies:
+  - plupload:plupload
+
+# Information added by Drupal.org packaging script on 2024-04-26
+version: '2.1.0'
+project: 'plupload'
+datestamp: 1714147182

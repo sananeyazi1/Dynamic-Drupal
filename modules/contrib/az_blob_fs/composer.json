@@ -1,0 +1,36 @@
+{
+    "name": "drupal/az_blob_fs",
+    "type": "drupal-module",
+    "description": "This module create a stream wrapper scheme in order to store files on the Azure Storage cloud service.",
+    "keywords": [
+        "Drupal",
+        "Azure",
+        "Microsoft Azure",
+        "Azure Storage",
+        "Azure Blob Storage"
+    ],
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "homepage": "https://www.drupal.org/project/az_blob_fs",
+    "authors": [
+        {
+            "name": "George Anderson (geoanders)",
+            "homepage": "https://www.drupal.org/u/geoanders",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Yahya Al Hamad (yahyaalhamad)",
+            "homepage": "https://www.drupal.org/u/yahyaalhamad",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/az_blob_fs",
+        "source": "https://git.drupalcode.org/project/az_blob_fs"
+    },
+    "require": {
+        "drupal/core": "^8.8 || ^9 || ^10",
+        "drupal/key": ">=1.15",
+        "microsoft/azure-storage-blob": ">=1.5"
+    }
+}

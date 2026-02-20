@@ -1,0 +1,28 @@
+
+{{ attach_library('social_course_scorm/social-course-scorm')}}
+{%
+set classes = [
+'card',
+'brand-border-radius',
+node.isPromoted() ? 'node--promoted',
+not node.isPublished() ? 'node--unpublished',
+'course-full'
+]
+%}
+<article{{ attributes.addClass(classes) }}>
+  <div{{ content_attributes.addClass('card__body') }}>
+    {% if not node.isPublished() %}
+      <div class="node--unpublished__label">{% trans %} unpublished {% endtrans %}</div>
+    {% endif %}
+    {% block nodefull_body %}
+        <!-- SCORM content start -->
+        {{ content }}
+        {% if course_enrollment_status %}
+          <div class="social-course-completion-message-container">
+            {{ course_enrollment_status }}
+          </div>
+        {% endif %}
+      </div>
+    {% endblock %}
+  </div>
+</article>

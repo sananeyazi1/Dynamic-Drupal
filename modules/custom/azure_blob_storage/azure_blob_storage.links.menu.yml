@@ -1,0 +1,6 @@
+azure_blob_storage.admin_settings:
+  title: 'Azure Blob Storage'
+  description: 'Configure azure blob storage module settings.'
+  parent: system.admin_config_system
+  route_name: azure_blob_storage.settings
+  weight: 120

@@ -1,0 +1,17 @@
+services:
+  # stream_wrapper.azure:
+  #   class: Drupal\custom_override\StreamWrapper\AzureStreamWrapper
+  #   arguments: ['@azure_storage.client']
+  #   tags:
+  #     - { name: stream_wrapper, scheme: 'azure' }
+
+  # custom_override.azure_blob_stream_wrapper:
+  #   class: 'Drupal\custom_override\StreamWrapper\AzureStreamWrapper'
+  #   arguments: ['@azure_blob_storage_service']
+  #   tags:
+  #     - { name: stream_wrapper, scheme: 'azure' }  
+
+  # stream_wrapper.public:
+  #   class: Drupal\Core\StreamWrapper\PublicStream
+  #   tags:
+  #     - { name: stream_wrapper, scheme: public }

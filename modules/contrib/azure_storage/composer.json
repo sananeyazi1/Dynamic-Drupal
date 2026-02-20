@@ -1,0 +1,18 @@
+{
+    "name": "drupal/azure_storage",
+    "type": "drupal-module",
+    "description": "Azure Storage Integration",
+    "keywords": [
+        "Drupal"
+    ],
+    "license": "GPL-2.0+",
+    "homepage": "https://www.drupal.org/project/azure_storage",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/azure_storage",
+        "source": "http://cgit.drupalcode.org/azure_storage"
+    },
+    "require": {
+        "microsoft/azure-storage-queue": "^1.3",
+        "microsoft/azure-storage-common": "^1.5"
+    }
+}

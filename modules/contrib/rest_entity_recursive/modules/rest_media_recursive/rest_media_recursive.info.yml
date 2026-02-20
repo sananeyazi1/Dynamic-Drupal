@@ -1,0 +1,15 @@
+name: REST Entity Recursive - Media
+description: Enhanced Media support for "json_recursive" REST format.
+package: Web services
+type: module
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:media
+  - consumer_image_styles:consumer_image_styles
+  - rest_entity_recursive:rest_entity_recursive
+
+
+# Information added by Drupal.org packaging script on 2024-04-24
+version: '2.0.5-rc5'
+project: 'rest_entity_recursive'
+datestamp: 1713944368

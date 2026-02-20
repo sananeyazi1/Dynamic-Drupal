@@ -1,0 +1,5 @@
+azure_storage.settings_form:
+  title: 'Azure Storage'
+  route_name: azure_storage.settings_form
+  description: 'Configure Azure Storage Settings'
+  parent: system.admin_config_services

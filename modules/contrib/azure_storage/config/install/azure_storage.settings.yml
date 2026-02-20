@@ -1,0 +1,6 @@
+protocol: 'https'
+account_name: ''
+test_account_key: ''
+live_account_key: ''
+mode: 'test'
+endpoint_suffix: ''

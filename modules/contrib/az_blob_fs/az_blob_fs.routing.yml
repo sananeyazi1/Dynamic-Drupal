@@ -1,0 +1,12 @@
+az_blob_fs.settings_form:
+  path: '/admin/config/media/azure-blob-file-system'
+  defaults:
+    _form: '\Drupal\az_blob_fs\Form\AzBlobFsSettingsForm'
+    _title: 'Azure Blob File System'
+  requirements:
+    _permission: 'administer azure blob storage'
+  options:
+    _admin_route: TRUE
+
+route_callbacks:
+  - '\Drupal\az_blob_fs\Routing\AzBlobFsImageStyleRoutes::routes'

@@ -1,0 +1,4 @@
+azure_storage.settings_form:
+  title: 'Settings'
+  route_name: azure_storage.settings_form
+  base_route: azure_storage.settings_form

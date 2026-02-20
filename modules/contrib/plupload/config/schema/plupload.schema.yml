@@ -1,0 +1,7 @@
+plupload.settings:
+  type: config_object
+  label: 'Plupload settings'
+  mapping:
+    temporary_uri:
+      type: string
+      label: 'Temporary upload uri'

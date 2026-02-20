@@ -1,0 +1,4 @@
+administer azure blob storage:
+  description: 'Administer Azure Blob Storage File System.'
+  title: 'Administer Azure Storage File System'
+  restrict access: TRUE

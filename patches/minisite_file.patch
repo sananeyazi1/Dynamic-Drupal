@@ -1,0 +1,156 @@
+From 2e29bb2e5580bffa322896a2244523572b54f485 Mon Sep 17 00:00:00 2001
+From: t180miya <t.miya.c.180157@gmail.com>
+Date: Sun, 14 Jan 2024 12:07:18 +0900
+Subject: [PATCH 1/2] insert subdir name into the path of link/script/style/img
+
+---
+ src/PageProcessor.php |  8 ++++----
+ src/UrlBag.php        | 16 ++++++++++++++++
+ 2 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/src/PageProcessor.php b/src/PageProcessor.php
+index bef8705..0992316 100644
+--- a/src/PageProcessor.php
++++ b/src/PageProcessor.php
+@@ -180,7 +180,7 @@ class PageProcessor implements PageProcessorInterface {
+     }
+ 
+     $url = self::urlExtractPath($url);
+-    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir());
++    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
+     $item->setAttribute('href', $url);
+   }
+ 
+@@ -198,7 +198,7 @@ class PageProcessor implements PageProcessorInterface {
+     }
+ 
+     $url = self::urlExtractPath($url);
+-    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir());
++    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
+     $item->setAttribute('src', $url);
+   }
+ 
+@@ -226,7 +226,7 @@ class PageProcessor implements PageProcessorInterface {
+       $url = $match[1];
+ 
+       $url = self::urlExtractPath($url);
+-      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir());
++      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
+ 
+       $str = str_replace($match[1], $url, $match[0]);
+       $content = str_replace($match[0], $str, $content);
+@@ -248,7 +248,7 @@ class PageProcessor implements PageProcessorInterface {
+       return;
+     }
+ 
+-    $item->setAttribute('src', UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir()));
++    $item->setAttribute('src', UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir()));
+   }
+ 
+   /**
+diff --git a/src/UrlBag.php b/src/UrlBag.php
+index 362c28d..f5eef8e 100644
+--- a/src/UrlBag.php
++++ b/src/UrlBag.php
+@@ -35,6 +35,11 @@ class UrlBag {
+    */
+   const URI_PART_BASENAME = 3;
+ 
++  /**
++   * Defines part of URI which is dirname of document file.
++   */
++  const URI_PART_DIRNAME = 4;
++
+   /**
+    * The URI of the current file.
+    *
+@@ -197,6 +202,13 @@ class UrlBag {
+     return static::getUriPart($this->getUri(), self::URI_PART_ASSET_DIR);
+   }
+ 
++  /**
++   * Get sub directory.
++   */
++  public function getSubDir() {
++    return static::getUriPart($this->getUri(), self::URI_PART_DIRNAME);
++  }
++
+   /**
+    * Convert URL to local URL.
+    *
+@@ -338,6 +350,10 @@ class UrlBag {
+     if ($part_name == self::URI_PART_BASENAME) {
+       return basename($parts[3]);
+     }
++
++    if ($part_name == self::URI_PART_DIRNAME) {
++      return dirname($parts[3]);
++    }
+   }
+ 
+   /**
+-- 
+GitLab
+
+
+From 663e40adceb7f6bf2912a92a5c8b12ed05d6f431 Mon Sep 17 00:00:00 2001
+From: t180miya <t.miya.c.180157@gmail.com>
+Date: Wed, 19 Jun 2024 23:31:39 +0900
+Subject: [PATCH 2/2] Fix incorrect path when 'Use URL alias' is on
+
+---
+ src/PageProcessor.php | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/PageProcessor.php b/src/PageProcessor.php
+index 0992316..528f56a 100644
+--- a/src/PageProcessor.php
++++ b/src/PageProcessor.php
+@@ -141,7 +141,7 @@ class PageProcessor implements PageProcessorInterface {
+     // confusing).
+     if (UrlValidator::urlIsRelative($url) && self::urlIsDocumentFile($url)) {
+       $url = self::urlExtractPath($url);
+-      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir());
++      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . dirname($this->urlBag->getPathInArchive()));
+       $item->setAttribute('href', $url);
+ 
+       return;
+@@ -180,7 +180,7 @@ class PageProcessor implements PageProcessorInterface {
+     }
+ 
+     $url = self::urlExtractPath($url);
+-    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
++    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . dirname($this->urlBag->getPathInArchive()));
+     $item->setAttribute('href', $url);
+   }
+ 
+@@ -198,7 +198,7 @@ class PageProcessor implements PageProcessorInterface {
+     }
+ 
+     $url = self::urlExtractPath($url);
+-    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
++    $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . dirname($this->urlBag->getPathInArchive()));
+     $item->setAttribute('src', $url);
+   }
+ 
+@@ -226,7 +226,7 @@ class PageProcessor implements PageProcessorInterface {
+       $url = $match[1];
+ 
+       $url = self::urlExtractPath($url);
+-      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir());
++      $url = UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . dirname($this->urlBag->getPathInArchive()));
+ 
+       $str = str_replace($match[1], $url, $match[0]);
+       $content = str_replace($match[0], $str, $content);
+@@ -248,7 +248,7 @@ class PageProcessor implements PageProcessorInterface {
+       return;
+     }
+ 
+-    $item->setAttribute('src', UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . $this->urlBag->getSubDir()));
++    $item->setAttribute('src', UrlValidator::relativeToRoot($url, $this->urlBag->getAssetDir() . '/' . $this->urlBag->getRootDir() . '/' . dirname($this->urlBag->getPathInArchive())));
+   }
+ 
+   /**
+-- 
+GitLab
+

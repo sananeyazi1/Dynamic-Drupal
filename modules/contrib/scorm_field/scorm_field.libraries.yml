@@ -1,0 +1,33 @@
+scorm-field-scorm-player:
+  version: 1.x
+  css:
+    theme:
+      css/scorm_field.player.css: {}
+  js:
+    js/lib/api-2004.js: {}
+    js/lib/api-1.2.js: {}
+    js/lib/player.js: {}
+    js/scorm_field.player.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.ajax
+
+scorm-field-scorm-ios-13:
+  version: 1.x
+  js:
+    js/scorm_field_scorm_ios_13.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+scorm-field-scorm:
+  version: 1.x
+  css:
+    theme:
+      css/scorm_field.css: {}
+  js:
+    js/scorm_field.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

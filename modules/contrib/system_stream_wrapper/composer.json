@@ -1,0 +1,14 @@
+{
+    "name": "drupal/system_stream_wrapper",
+    "description": "Provides stream wrappers to access files in module, theme, profile, and library files and directories.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Drupal Community"
+        }
+    ],
+    "require": {
+        "drupal/core": "^9 || ^10"
+    }
+}

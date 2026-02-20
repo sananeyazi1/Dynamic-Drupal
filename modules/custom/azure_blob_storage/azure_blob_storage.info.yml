@@ -1,0 +1,9 @@
+name: 'Azure Blob Storage'
+type: module
+description: 'Azure Blob Storage module uses Azure Storage SDK and Zip php extension to create backup archive from given by the user directory and uploads it part by part to Azure Blob Storage.'
+# core: 8.x
+# Information added by Drupal.org packaging script on 2019-04-03
+core_version_requirement: ^10 || ^11
+package: Custom
+project: 'azure_blob_storage'
+datestamp: 1554275284

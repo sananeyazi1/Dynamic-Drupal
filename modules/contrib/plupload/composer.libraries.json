@@ -1,0 +1,26 @@
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "moxiecode/plupload",
+                "version": "2.3.9",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/moxiecode/plupload/archive/refs/tags/v2.3.9.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    ],
+    "require": {
+        "moxiecode/plupload": "~2.3.9"
+    },
+    "extra": {
+        "patches": {
+            "moxiecode/plupload": {
+                "Issue 1903850: Remove plupload library examples folder": "https://www.drupal.org/files/issues/2021-11-10/plupload-rm_examples_2_3_7-1903850-38.patch"
+            }
+        }
+    }
+}

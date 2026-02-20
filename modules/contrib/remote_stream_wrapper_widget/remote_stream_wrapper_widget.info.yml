@@ -1,0 +1,12 @@
+name: Remote Stream Wrapper Widget
+description: Implements the remote stream wrapper api as a field widget.
+type: module
+core_version_requirement: ^9 || ^10
+
+dependencies:
+- remote_stream_wrapper:remote_stream_wrapper
+
+# Information added by Drupal.org packaging script on 2023-11-17
+version: '8.x-1.4'
+project: 'remote_stream_wrapper_widget'
+datestamp: 1700247840

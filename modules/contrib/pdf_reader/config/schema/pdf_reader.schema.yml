@@ -1,0 +1,25 @@
+field.formatter.settings.FieldPdfReaderFields:
+  type: mapping
+  label: 'FieldPdfReaderFields widget settings'
+  mapping:
+    pdf_width:
+      type: integer
+      label: 'PDF Width'
+    pdf_height:
+      type: integer
+      label: 'PDF Height'
+    renderer:
+      type: string
+      label: 'Renderer'
+    embed_view_fit:
+      type: string
+      label: 'Embed View Fit'
+    embed_hide_toolbar:
+      type: boolean
+      label: 'Embed Hide Toolbar'
+    download:
+      type: boolean
+      label: 'Download link'
+    link_placement:
+      type: string
+      label: 'Link placement'

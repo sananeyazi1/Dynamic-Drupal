@@ -1,0 +1,132 @@
+{
+    "name": "drupal/legacy-project",
+    "description": "Project template for Drupal projects with composer following drupal/drupal layout",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/drupal",
+    "support": {
+        "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
+        "chat": "https://www.drupal.org/node/314178"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    ],
+    "require": {
+        "composer/installers": "^2.0",
+        "cweagans/composer-patches": "^1.7",
+        "drupal/admin_toolbar": "^3.4",
+        "drupal/az_blob_fs": "^2.3",
+        "drupal/azure_storage": "^2.0",
+        "drupal/business_responsive_theme": "^3.0",
+        "drupal/core-composer-scaffold": "^10.2",
+        "drupal/core-project-message": "^10.2",
+        "drupal/core-recommended": "^10.2",
+        "drupal/core-vendor-hardening": "^10.2",
+        "drupal/entity_reference_revisions": "^1.11",
+        "drupal/flysystem_azure": "1.0.x-dev@dev",
+        "drupal/gdoc_field": "^1.4",
+        "drupal/h5p": "^2.0@alpha",
+        "drupal/inline_entity_form": "^1.0@RC",
+        "drupal/minisite": "^2.1",
+        "drupal/pathauto": "^1.12",
+        "drupal/pdf": "^1.2",
+        "drupal/pdf_reader": "^1.1",
+        "drupal/plupload": "^2.1",
+        "drupal/remote_stream_wrapper_widget": "^1.4",
+        "drupal/rest_entity_recursive": "~2.0@RC",
+        "drupal/restui": "^1.21",
+        "drupal/scorm_field": "^1.0",
+        "drupal/system_stream_wrapper": "^2.0",
+        "drush/drush": "^12.5",
+        "league/flysystem-azure-blob-storage": "^0.1.4",
+        "microsoft/azure-storage-blob": "*",
+        "microsoft/azure-storage-file": "*",
+        "microsoft/azure-storage-queue": "*",
+        "microsoft/azure-storage-table": "*"
+    },
+    "conflict": {
+        "drupal/drupal": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "drupal/core-composer-scaffold": true,
+            "drupal/core-project-message": true,
+            "drupal/core-vendor-hardening": true,
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": true,
+            "cweagans/composer-patches": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "drupal-scaffold": {
+            "locations": {
+                "web-root": "./"
+            }
+        },
+        "patches": {
+            "drupal/az_blob_fs": {
+              "COntroller issue": "https://www.drupal.org/files/issues/2024-06-25/3457065-fatal-error_1.patch"
+            }
+        },
+        "installer-paths": {
+            "core": [
+                "type:drupal-core"
+            ],
+            "libraries/{$name}": [
+                "type:drupal-library"
+            ],
+            "modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
+            ],
+            "modules/custom/{$name}": [
+                "type:drupal-custom-module"
+            ],
+            "profiles/custom/{$name}": [
+                "type:drupal-custom-profile"
+            ],
+            "themes/custom/{$name}": [
+                "type:drupal-custom-theme"
+            ]
+        },
+        "drupal-core-project-message": {
+            "include-keys": [
+                "homepage",
+                "support"
+            ],
+            "post-create-project-cmd-message": [
+                "<bg=blue;fg=white>                                                         </>",
+                "<bg=blue;fg=white>  Congratulations, you’ve installed the Drupal codebase  </>",
+                "<bg=blue;fg=white>  from the drupal/legacy-project template!               </>",
+                "<bg=blue;fg=white>                                                         </>",
+                "",
+                "<bg=yellow;fg=black>Next steps</>:",
+                "  * Install the site: https://www.drupal.org/docs/installing-drupal",
+                "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
+                "  * Get support: https://www.drupal.org/support",
+                "  * Get involved with the Drupal community:",
+                "      https://www.drupal.org/getting-involved",
+                "  * Remove the plugin that prints this message:",
+                "      composer remove drupal/core-project-message"
+            ]
+        }
+             
+    }
+
+}

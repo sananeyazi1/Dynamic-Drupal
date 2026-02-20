@@ -1,0 +1,13 @@
+name: REST Entity Recursive - Menu
+description: Enhanced Menu support for "json_recursive" REST format.
+package: Web services
+type: module
+core_version_requirement: ^8 || ^9 || ^10
+dependencies:
+  - rest_entity_recursive:rest_entity_recursive
+
+
+# Information added by Drupal.org packaging script on 2024-04-24
+version: '2.0.5-rc5'
+project: 'rest_entity_recursive'
+datestamp: 1713944368

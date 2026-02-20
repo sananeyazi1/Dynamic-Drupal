@@ -1,0 +1,53 @@
+{
+    "name": "drupal/plupload",
+    "description": "This module integrates the Plupload library (available from http://plupload.com) with Drupal forms.",
+    "type": "drupal-module",
+    "homepage": "https://www.drupal.org/project/plupload",
+    "authors": [
+        {
+            "name": "Thalles Ferreira (thalles)",
+            "homepage": "https://www.drupal.org/u/thalles",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Truls S. Yggeseth (truls1502)",
+            "homepage": "https://www.drupal.org/u/truls1502",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Renato Gonçalves H (RenatoG)",
+            "homepage": "https://www.drupal.org/user/renatog",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Dave Reid",
+            "homepage": "https://www.drupal.org/u/dave-reid",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Daniel Kudwien (sun)",
+            "homepage": "https://www.drupal.org/u/sun",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Paulo Henrique Cota Starling (paulocs)",
+            "homepage": "https://www.drupal.org/u/paulocs",
+            "role" : "Maintainer"
+        },
+        {
+            "name": "Marc Orcau (budalokko)",
+            "homepage": "https://www.drupal.org/u/budalokko",
+            "role" : "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/plupload",
+        "irc": "irc://irc.freenode.org/drupal-contribute",
+        "source": "https://cgit.drupalcode.org/plupload"
+    },
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "require": {
+        "drupal/core": "^9 || ^10"
+    }
+}

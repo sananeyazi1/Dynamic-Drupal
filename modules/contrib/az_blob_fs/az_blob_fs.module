@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * @file
+ * Contains az_blob_fs.module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\file\FileInterface;
+use Drupal\file\Entity\File;
+
+/**
+ * Implements hook_help().
+ */
+function az_blob_fs_help($route_name, RouteMatchInterface $route_match) {
+  if ($route_name == 'help.page.az_blob_fs') {
+    $text = file_get_contents(__DIR__ . '/README.md');
+    if (!Drupal::moduleHandler()->moduleExists('markdown')) {
+      return '<pre>' . $text . '</pre>';
+    }
+    else {
+      /** @var \Drupal\markdown\PluginManager\ParserManagerInterface $parser_manager */
+      $parser_manager = \Drupal::service('plugin.manager.markdown.parser');
+      $parser = $parser_manager->getDefaultParser([
+        'render_strategy' => ['type' => 'none'],
+      ]);
+      return $parser->parse($text);
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_ENTITY_insert() for file entity.
+ */
+function az_blob_fs_file_insert(FileInterface $file) {
+  /** @var \Drupal\az_blob_fs\AzBlobImageStylesWarmer $imageStylesWarmer */
+  $imageStylesWarmer = \Drupal::service('az_blob_fs.image_styles_warmer');
+  $imageStylesWarmer->warmUp($file);
+}
+
+/**
+ * Implements hook_ENTITY_update() for file entity.
+ */
+function az_blob_fs_file_update(FileInterface $file) {
+  /** @var \Drupal\az_blob_fs\AzBlobImageStylesWarmer $imageStylesWarmer */
+  $imageStylesWarmer = \Drupal::service('az_blob_fs.image_styles_warmer');
+  $imageStylesWarmer->warmUp($file);
+}
+
+/**
+ * Implements hook_ENTITY_insert() for crop entity.
+ */
+function az_blob_fs_crop_insert(EntityInterface $entity) {
+  if ($entity->get('entity_type')->value == 'file') {
+    if ($file = File::load($entity->get('entity_id')->value)) {
+      /** @var \Drupal\az_blob_fs\AzBlobImageStylesWarmer $imageStylesWarmer */
+      $imageStylesWarmer = \Drupal::service('az_blob_fs.image_styles_warmer');
+      $imageStylesWarmer->warmUp($file);
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_update() for crop entity.
+ */
+function az_blob_fs_crop_update(EntityInterface $entity) {
+  if ($entity->get('entity_type')->value == 'file') {
+    if ($file = File::load($entity->get('entity_id')->value)) {
+      /** @var \Drupal\az_blob_fs\AzBlobImageStylesWarmer $imageStylesWarmer */
+      $imageStylesWarmer = \Drupal::service('az_blob_fs.image_styles_warmer');
+      $imageStylesWarmer->warmUp($file);
+    }
+  }
+}

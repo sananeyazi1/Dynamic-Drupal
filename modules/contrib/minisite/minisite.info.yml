@@ -1,0 +1,14 @@
+name: Minisite
+type: module
+description: Upload and serve arbitrary "minisites" archives from a Drupal website.
+package: Field types
+core_version_requirement: ^10
+dependencies:
+  - drupal:file
+recommends:
+  - pathauto:pathauto
+
+# Information added by Drupal.org packaging script on 2024-07-05
+version: '2.2.0'
+project: 'minisite'
+datestamp: 1720142215

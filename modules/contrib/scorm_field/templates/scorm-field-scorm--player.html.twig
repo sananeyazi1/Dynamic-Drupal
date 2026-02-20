@@ -1,0 +1,17 @@
+{{ attach_library('scorm_field/scorm-field-scorm')}} 
+
+<div id="scorm-player-wrapper">  
+  {% if decoupled_mode != TRUE %}
+    <button class="button btn btn-primary button--primary" id="fullscreen-button" data-drupal-selector="fullscreen-button" aria-controls="scorm-field-wrapper" aria-expanded="false">
+      {{ 'Fullscreen'|trans }}    
+    </button>
+  {% endif %}
+  <div id="scorm-field-scorm-overlay">
+    <!-- SCORM content start --> 
+    <div class="scorm-ui-player" id="scorm-ui-player-scorm-{{ scorm_id }}>" data-scorm-id="{{ scorm_id }}" data-node-id="{{ node_id }}">
+      <div class="scorm-ui-player-iframe-wrapper">
+        <iframe class="responsive-iframe" scrolling="no" frameBorder="0" data-sco-id="{{ start_sco.id }}" src="{{ start_sco.base_path }}scorm-field-scorm/player/sco/{{ start_sco.id }}"></iframe>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+{
+  "name": "drupal/remote_stream_wrapper_widget",
+  "type": "drupal-module",
+  "description": "Remote Stream Wrapper Widget",
+  "keywords": [
+    "Drupal"
+  ],
+  "license": "GPL-2.0+",
+  "homepage": "http://drupal.org/project/remote_stream_wrapper_widget",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/remote_stream_wrapper_widget",
+    "source": "http://git.drupalcode.org/remote_stream_wrapper_widget"
+  },
+  "require": {}
+}

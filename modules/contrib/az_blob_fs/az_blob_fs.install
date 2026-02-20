@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * @file
+ * Install & requirements hooks for the Azure BloStorage File System module.
+ */
+
+use Drupal\Core\Url;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+
+/**
+ * Implements hook_requirements().
+ */
+function az_blob_fs_requirements($phase): array {
+  // Instantiate array for requirements.
+  $requirements = [];
+
+  // Installation phase.
+  if ($phase === 'install' && !class_exists(BlobRestProxy::class)) {
+    $requirements['microsoft_azure_blob_php_library'] = [
+      'description' => t('Azure Blob File System requires the Microsoft Blob Storage PHP library.'),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
+  // Runtime phase.
+  if ($phase === 'runtime') {
+
+    // Check required config settings.
+    $config = \Drupal::config('az_blob_fs.settings');
+    if (empty($config->get('az_blob_account_name')) || empty($config->get('az_blob_account_key_name'))) {
+      $requirements['az_blob_fs'] = [
+        'title' => t('Azure Blob Storage File System'),
+        'severity' => REQUIREMENT_WARNING,
+        'description' => t('Azure Blob Storage File System is missing important configurations. Please set these up at the <a href="@settings">settings page</a>.', [
+          '@settings' => Url::fromRoute('az_blob_fs.settings_form')->toString(),
+        ]),
+      ];
+    }
+
+    // We need the "allow_url_fopen" PHP setting to be enabled for this module.
+    if (ini_get('allow_url_fopen')) {
+      $requirements['az_blob_fs_allow_url_fopen'] = [
+        'severity' => REQUIREMENT_OK,
+        'title' => t('allow_url_fopen'),
+        'value' => t('Enabled'),
+      ];
+    }
+    else {
+      $requirements['az_blob_fs_allow_url_fopen'] = [
+        'severity' => REQUIREMENT_ERROR,
+        'title' => t('allow_url_fopen'),
+        'value' => t('Disabled'),
+        'description' => t('The Azure Blob Storage File System module requires that the allow_url_fopen setting be turned on in php.ini.'),
+      ];
+    }
+
+    // Set up a warning for filesizes if the PHP installation is in 32-Bit.
+    if (PHP_INT_SIZE === 8) {
+      $requirements['az_blob_fs_int64'] = [
+        'title' => t('PHP architecture'),
+        'value' => t('64-Bit'),
+        'severity' => REQUIREMENT_OK,
+      ];
+    }
+    else {
+      $requirements['az_blob_fs_int64'] = [
+        'title' => t('PHP architecture'),
+        'value' => t('32-Bit'),
+        'description' => t('A 64-Bit PHP installation is required in order to support files larger than 2GB.'),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
+  }
+
+  return $requirements;
+}

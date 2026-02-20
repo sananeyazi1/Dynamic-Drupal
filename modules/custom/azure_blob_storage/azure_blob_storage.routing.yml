@@ -1,0 +1,15 @@
+azure_blob_storage.test:
+  path: '/test'
+  defaults:
+    _controller: '\Drupal\azure_blob_storage\Controller\AzureStorageTestController::test'
+    _title: 'Azure blob storage test'
+  requirements:
+    _permission: 'access content'
+
+azure_blob_storage.settings:
+  path: '/admin/config/system/azure-blob-storage'
+  defaults:
+    _form: '\Drupal\azure_blob_storage\Form\AzureSettingsForm'
+    _title: 'Azure blob storage settings'
+  requirements:
+    _permission: 'access content'

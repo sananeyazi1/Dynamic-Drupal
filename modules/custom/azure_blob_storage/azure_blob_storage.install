@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Install or uninstall functions for the azure_storage module.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ */
+function azure_blob_storage_schema() {
+  $schema['azure_blob_storage_blocks'] = [
+    'description' => 'Stores created block Ids.',
+    'fields' => [
+      'blocks' => [
+        'type' => 'blob',
+        'not null' => TRUE,
+        'description' => 'Serialized array of block Ids',
+      ],
+      'counter' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Counter of blocks',
+      ],
+    ],
+  ];
+
+  return $schema;
+}

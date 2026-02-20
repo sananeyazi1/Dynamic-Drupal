@@ -1,0 +1,5 @@
+az_blob_fs.admin:
+  version: VERSION
+  css:
+    component:
+      css/az_blob_fs.admin.css: { }

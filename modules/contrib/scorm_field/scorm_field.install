@@ -1,0 +1,305 @@
+<?php
+
+use Drupal\Core\Database\Database;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+use Symfony\Component\Yaml\Yaml;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+
+/**
+ * @file
+ * Module install/update functionality.
+ */
+
+
+function scorm_field_install() {
+
+  // We need to add new database tables
+  // Install new table "scorm_field_scorm_packages"
+  $scorm_field_scorm_packages_table_specification = [
+    'description' => 'Uploaded SCORM packages.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'fid' => [
+        'description' => 'The managed file ID that references the SCORM package (ZIP file).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'extracted_dir' => [
+        'descripition' => 'The location where the SCORM was extracted.',
+        'type' => 'text',
+      ],
+      'manifest_file' => [
+        'description' => 'The location of the manifest file.',
+        'type' => 'text',
+      ],
+      'manifest_id' => [
+        'type' => 'text',
+      ],
+      'metadata' => [
+        'description' => 'The serialized meta data of the manifest file.',
+        'type' => 'text',
+        'size' => 'medium',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => ['fid' => ['fid']],
+    'foreign keys' => [
+      'file_managed' => ['fid' => 'fid'],
+    ],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('scorm_field_scorm_packages', $scorm_field_scorm_packages_table_specification);
+
+  $scorm_field_scorm_package_scos_table_specification = [
+    'description' => 'Uploaded SCORM package SCO items.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'scorm_id' => [
+        'description' => 'The SCORM package ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'organization' => [
+        'descripition' => 'The SCO organization.',
+        'type' => 'text',
+      ],
+      'identifier' => [
+        'descripition' => 'The SCO item identifier.',
+        'type' => 'text',
+      ],
+      'parent_identifier' => [
+        'descripition' => 'The SCO item parent identifier. Equals 0 if at the root of the tree.',
+        'type' => 'text',
+      ],
+      'launch' => [
+        'descripition' => 'The SCO item launch URL, if any.',
+        'type' => 'text',
+      ],
+      'type' => [
+        'descripition' => 'The SCO item internal type.',
+        'type' => 'text',
+      ],
+      'scorm_type' => [
+        'descripition' => 'The SCO item SCORM compliant type.',
+        'type' => 'text',
+      ],
+      'title' => [
+        'descripition' => 'The SCO item title.',
+        'type' => 'text',
+      ],
+      'weight' => [
+        'descripition' => 'The SCO item weight. The heavier the weight, the later it will show up in a navigation tree.',
+        'type' => 'int',
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => ['scorm_id' => ['scorm_id']],
+    'foreign keys' => [
+      'scorm_field_scorm_packages' => ['scorm_id' => 'id'],
+    ],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('scorm_field_scorm_package_scos', $scorm_field_scorm_package_scos_table_specification);
+
+  $scorm_field_scorm_package_sco_attributes_table_specification = [
+    'description' => 'Uploaded SCORM package SCO item attributes.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'sco_id' => [
+        'description' => 'The SCORM item ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'attribute' => [
+        'type' => 'text',
+      ],
+      'value' => [
+        'type' => 'text',
+      ],
+      'serialized' => [
+        'type' => 'int',
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => ['sco_id' => ['sco_id']],
+    'foreign keys' => [
+      'scorm_field_scorm_package_scos' => ['sco_id' => 'id'],
+    ],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('scorm_field_scorm_package_sco_attributes', $scorm_field_scorm_package_sco_attributes_table_specification);
+
+  $scorm_field_scorm_cmi_data_table_specification = [
+    'description' => 'SCORM package SCORM CMI data attributes.',
+    'fields' => [
+      'uid' => [
+        'description' => 'The user ID this data belongs to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'scorm_id' => [
+        'description' => 'The SCORM ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'cmi_key' => [
+        'description' => 'The CMI data key string.',
+        'type' => 'varchar',
+        'length' => 190,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'value' => [
+        'type' => 'text',
+      ],
+      'serialized' => [
+        'type' => 'int',
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['uid', 'scorm_id', 'cmi_key'],
+    'indexes' => [
+      'scorm_id' => ['scorm_id'],
+      'uid' => ['uid'],
+      'cmi_key' => ['cmi_key'],
+    ],
+    'foreign keys' => [
+      'scorm_field_scorm_packages' => ['scorm_id' => 'id'],
+      'users' => ['uid' => 'uid'],
+    ],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('scorm_field_scorm_cmi_data', $scorm_field_scorm_cmi_data_table_specification);
+
+}
+
+/**
+ * Implements hook_uninstall()
+ */
+function scorm_field_uninstall() {
+
+  \Drupal::database()->schema()->dropTable('scorm_field_scorm_cmi_data');
+  \Drupal::database()->schema()->dropTable('scorm_field_scorm_package_sco_attributes');
+  \Drupal::database()->schema()->dropTable('scorm_field_scorm_package_scos');
+  \Drupal::database()->schema()->dropTable('scorm_field_scorm_packages');
+  
+  // Delete existing view
+  \Drupal::configFactory()->getEditable('views.view.scorm_report_per_node')->delete();
+
+}
+
+/**
+ * Adds new scorm report entity.
+ * Adds new scorm report view.
+ */
+function scorm_field_update_8901() {
+  //check if the table exists first.  If not, then create the entity.
+  if(!\Drupal::database()->schema()->tableExists('scorm_report')) {
+    \Drupal::entityTypeManager()->clearCachedDefinitions();
+    \Drupal::entityDefinitionUpdateManager()
+      ->installEntityType(\Drupal::entityTypeManager()->getDefinition('scorm_report'));
+  }
+
+  // Add or update a view from config file
+  if (\Drupal::moduleHandler()->moduleExists('views')) {
+    $config_path = \Drupal::service('extension.list.module')->getPath('scorm_field') . '/config/update/views.view.scorm_report_per_node_8901.yml';
+    $data = Yaml::parse(file_get_contents($config_path));
+    \Drupal::configFactory()->getEditable('views.view.scorm_report_per_node')->setData($data)->save(TRUE);
+  }
+
+}
+
+
+/**
+ * Adds new scorm report base field ip.
+ * Update scorm report view.
+ */
+function scorm_field_update_8902() {
+
+  $field_storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(t('IP'));      
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('ip', 'scorm_report', 'scorm_field', $field_storage_definition);    
+
+  // Add or update a view from config file
+  if (\Drupal::moduleHandler()->moduleExists('views')) {
+    $config_path = \Drupal::service('extension.list.module')->getPath('scorm_field') . '/config/update/views.view.scorm_report_per_node_8902.yml';
+    $data = Yaml::parse(file_get_contents($config_path));
+    \Drupal::configFactory()->getEditable('views.view.scorm_report_per_node')->setData($data)->save(TRUE);
+  } 
+
+}
+
+
+/**
+ * Adds new scorm report base field session_uuid.
+ * Update scorm report view.
+ */
+function scorm_field_update_8903() {
+
+  $field_storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(t('Session UUID'));      
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('session_uuid', 'scorm_report', 'scorm_field', $field_storage_definition);   
+    
+  // Delete existing view
+  \Drupal::configFactory()->getEditable('views.view.scorm_report_per_node')->delete();
+
+  /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
+  $config_manager = \Drupal::service('config.manager');  
+  // Get config path
+  $config_path = \Drupal::service('extension.list.module')->getPath('scorm_field') . '/config/update/views.view.scorm_report_per_node_8903.yml';
+
+  $raw = file_get_contents($config_path);
+  $value = \Drupal\Component\Serialization\Yaml::decode($raw);
+  if(!is_array($value)) {
+    throw new \RuntimeException(sprintf('Invalid YAML file %s'), $config_path);
+  }
+
+  $type = $config_manager->getEntityTypeIdByName(basename($config_path));
+  $entity_manager = $config_manager->getEntityTypeManager();
+  $definition = $entity_manager->getDefinition($type);
+  $id_key = $definition->getKey('id');
+  $id = $value[$id_key];
+
+  /** @var \Drupal\Core\Config\Entity\ConfigEntityStorage $entity_storage */
+  $entity_storage = $entity_manager->getStorage($type);
+  $entity = $entity_storage->load($id);
+  if ($entity) {
+    $entity = $entity_storage->updateFromStorageRecord($entity, $value);
+    $entity->save();
+    $updated[] = $id;
+  }
+  else {
+    $entity = $entity_storage->createFromStorageRecord($value);
+    $entity->save();
+    $created[] = $id;
+  }
+
+}
+
+

@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * This file defines the theme to render the display formats for pdf files.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function pdf_reader_theme($existing, $type, $theme, $path) {
+  $pdf_reader_theme = [
+    'pdf_reader' => [
+      'variables' => [
+        'service' => NULL,
+        'top' => NULL,
+        'bottom' => NULL,
+        'download_link' => NULL,
+        'file_url' => NULL ,
+        'width' => NULL,
+        'height' => NULL,
+      ],
+    ],
+    'pdf_reader_embed' => [
+      'variables' => [
+        'download_link' => NULL,
+        'service' => NULL,
+        'top' => NULL,
+        'bottom' => NULL,
+        'file_url' => NULL ,
+        'width' => NULL,
+        'height' => NULL,
+      ],
+    ],
+    'pdf_reader_js' => [
+      'variables' => [
+        'file' => NULL,
+        'download_link' => NULL,
+        'top' => NULL,
+        'bottom' => NULL,
+        'service' => NULL,
+        'width' => NULL,
+        'height' => NULL,
+      ],
+    ],
+  ];
+  if (\Drupal::moduleHandler()->moduleExists('colorbox')) {
+    $pdf_reader_theme['pdf_reader_colorbox'] = [
+      'variables' => [
+        'service' => NULL,
+        'download_link' => NULL,
+        'top' => NULL,
+        'bottom' => NULL,
+        'file_url' => NULL ,
+        'file_name' => NULL,
+      ],
+    ];
+  }
+  return $pdf_reader_theme;
+}
+
+/**
+ * Implements hook_help().
+ */
+function pdf_reader_help($route_name, RouteMatchInterface $route_match) {
+  if ($route_name === 'help.page.pdf_reader') {
+    $readme_file = file_exists(__DIR__ . '/README.md') ? __DIR__ . '/README.md' : __DIR__ . '/README.txt';
+    if (!file_exists($readme_file)) {
+      return NULL;
+    }
+    $text = file_get_contents($readme_file);
+    if ($text && !\Drupal::moduleHandler()->moduleExists('markdown')) {
+      return '<pre>' . $text . '</pre>';
+    }
+    else {
+      // Use the Markdown filter to render the README.
+      $filter_manager = \Drupal::service('plugin.manager.filter');
+      $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
+      $config = ['settings' => $settings];
+      $filter = $filter_manager->createInstance('markdown', $config);
+      return $filter->process($text, 'en');
+    }
+  }
+  return NULL;
+}

@@ -1,0 +1,47 @@
+
+{{ attach_library('social_course_scorm/social-course-scorm')}}
+{%
+set classes = [
+'card',
+'brand-border-radius',
+node.isPromoted() ? 'node--promoted',
+not node.isPublished() ? 'node--unpublished',
+'course-full'
+]
+%}
+<article{{ attributes.addClass(classes) }}>
+  {% if label %}
+    <h3 class="section-title section-title-node">
+    {{ label }}
+    <span class="social-course-scorm-icon-button">
+      <!-- Button open overlay -->
+      <a id="social-course-scorm-overlay-button-on" href="#">
+        <svg fill="#666666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/>
+        </svg>
+      </a>
+      </span>
+
+    </h3>
+  {% endif %}
+  <div{{ content_attributes.addClass('card__body') }}>
+    {% if not node.isPublished() %}
+      <div class="node--unpublished__label">{% trans %} unpublished {% endtrans %}</div>
+    {% endif %}
+    {% block nodefull_body %}
+      <div id="social-course-scorm-overlay">
+        <!-- Button close overlay -->
+        <a id="social-course-scorm-overlay-button-off" class="social-course-scorm-icon-button" href="#">
+          <span>Leave full screen mode</span>
+        </a>
+        <!-- SCORM content start -->
+        {{ content }}
+        {% if course_enrollment_status %}
+          <div class="social-course-completion-message-container">
+            {{ course_enrollment_status }}
+          </div>
+        {% endif %}
+      </div>
+    {% endblock %}
+  </div>
+</article>

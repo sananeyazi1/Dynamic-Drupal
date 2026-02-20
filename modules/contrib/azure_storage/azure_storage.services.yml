@@ -1,0 +1,7 @@
+services:
+  logger.channel.azure_storage:
+    parent: logger.channel_base
+    arguments: ['azure_storage']
+  azure_storage.client:
+    class: '\Drupal\azure_storage\AzureStorageClient'
+    arguments: ['@config.factory', '@logger.channel.azure_storage']

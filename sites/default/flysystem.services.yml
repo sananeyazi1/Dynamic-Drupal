@@ -1,0 +1,12 @@
+services:
+  flysystem:
+    class: League\Flysystem\Filesystem
+    arguments: ['@flysystem.adapter.azure']
+  flysystem.adapter.azure:
+    class: League\Flysystem\AzureBlobStorage\AzureBlobAdapter
+    factory: ['@flysystem.factory.azure', 'create']
+    arguments: ['@flysystem.client.azure', 'demoblobstoragecontainer']
+  flysystem.client.azure:
+    class: MicrosoftAzure\Storage\Blob\BlobRestProxy
+    factory: ['MicrosoftAzure\Storage\Blob\BlobRestProxy', 'createBlobService']
+    arguments: ['DefaultEndpointsProtocol=https;AccountName=mytestdemostorage;AccountKey=Uq4zsEyJB+GDSsFCDUOxvozI2ANheN/wU6AIYHJQHwzWuA5Mm+Ff4E61z269Okq0t3F9ob/KQ4rr+AStLAIZbA==']

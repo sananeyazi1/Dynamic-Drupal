@@ -1,0 +1,29 @@
+{
+  "name": "drupal/azure_blob_storage",
+  "description": "Provides basic azure storage integration for uploading files to azure blob storage.",
+  "keywords": ["azure", "storage", "Drupal"],
+  "type": "drupal-module",
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/sandbox/bizhev/3007853",
+  "authors": [
+    {
+      "name": "Stefan Bizhev",
+      "homepage": "https://www.drupal.org/u/bizhev",
+      "role": "Maintainer"
+    }
+  ],
+  "require": {
+    "ext-zip": "*",
+    "microsoft/azure-storage-blob": "*",
+    "microsoft/azure-storage-table": "*",
+    "microsoft/azure-storage-queue": "*",
+    "microsoft/azure-storage-file": "*"
+  },
+  "extra": {
+    "drush": {
+      "services": {
+        "drush.services.yml": "^9"
+      }
+    }
+  }
+}

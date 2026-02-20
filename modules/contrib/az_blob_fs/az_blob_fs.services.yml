@@ -1,0 +1,17 @@
+services:
+  az_blob_fs:
+    class: Drupal\az_blob_fs\AzBlobFsService
+    arguments: [ '@database', '@config.factory', '@key.repository' ]
+  az_blob_fs.image_styles_warmer:
+    class: Drupal\az_blob_fs\AzBlobImageStylesWarmer
+    arguments: [ '@config.factory', '@entity_type.manager', '@image.factory', '@entity_type.manager', '@queue' ]
+  az_blob_fs.path_processor.image_styles:
+    class: Drupal\az_blob_fs\PathProcessor\AzBlobFsPathProcessorImageStyles
+    tags:
+      - { name: path_processor_inbound, priority: 310 }
+  stream_wrapper.az_blob_fs:
+    class: Drupal\az_blob_fs\StreamWrapper\AzBlobFsStream
+    calls:
+      - [ setStringTranslation, [ '@string_translation' ] ]
+    tags:
+      - { name: stream_wrapper, scheme: azblob }

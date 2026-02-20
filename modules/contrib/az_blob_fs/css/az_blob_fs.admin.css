@@ -1,0 +1,12 @@
+@media screen and (min-width: 960px) {
+  .az-blob-fs.image-styles-wrapper {
+    margin: auto;
+    width: 100%;
+  }
+  .az-blob-fs.image-styles.fieldgroup {
+    box-sizing: border-box;
+    display: inline-block;
+    float: left;
+    width: 50%;
+  }
+}

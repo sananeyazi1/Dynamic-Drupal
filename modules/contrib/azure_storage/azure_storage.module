@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains azure_storage.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function azure_storage_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the azure_storage module.
+    case 'help.page.azure_storage':
+      $output = '';
+      $output .= '<h3>' . t('Azure Storage Integration') . '</h3>';
+      $output .= '<p>' . t('Help with Azure Storage Integration') . '</p>';
+      return $output;
+  }
+}

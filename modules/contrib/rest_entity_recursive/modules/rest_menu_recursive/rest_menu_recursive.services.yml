@@ -1,0 +1,6 @@
+services:
+  rest_menu_recursive.normalizer.menu:
+    class: Drupal\rest_menu_recursive\Normalizer\MenuNormalizer
+    arguments: ['@entity.repository', '@menu.link_tree', '@entity_field.manager']
+    tags:
+      - { name: normalizer, priority: 9 }

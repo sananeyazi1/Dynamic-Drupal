@@ -1,0 +1,372 @@
+<?php
+
+/**
+ * @file
+ * Contains azure_blob_storage.module.
+ */
+
+require_once "vendor/autoload.php";
+
+use MicrosoftAzure\Storage\Blob\Models\Block;
+use MicrosoftAzure\Storage\Blob\Models\BlobBlockType;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
+use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
+use Drupal\Core\Form\FormStateInterface;
+define('CHUNK_SIZE', 1024*1024);//Block Size = 1 MB
+define('DIR_SEPARATOR', '/');
+
+/**
+ * Uploads file to azure storage part by part.
+ */
+function uploadToAzureStorage(){
+
+    // Get module settings.
+    $settings = \Drupal::config('azure_blob_storage.settings');
+
+    // Get acc name and key.
+    $ACC_NAME = $settings->get('account_name');
+    $ACC_KEY = $settings->get('account_key');
+
+    // Get folder to archive.
+    $read_path = $settings->get('read_path');
+
+    // Get path of the archive.
+    $archive_path = $settings->get('archive_path');
+
+    // Set archive name.
+    $backup_name = 'backup_' . date('d_m_Y') . '.zip';
+
+    // Name of the file.
+    $blobName = basename($backup_name);
+
+    // Name of dummy file for cron.
+    $dummy_file = 'running_azure.lock';
+
+    $connectionString = "DefaultEndpointsProtocol=https;AccountName=".$ACC_NAME.";AccountKey=".$ACC_KEY;
+
+    // If archive is not created -> create it.
+    if (!file_exists($archive_path . DIR_SEPARATOR . $backup_name)) {
+        archiveDir($backup_name, $read_path, $archive_path);
+    }
+
+    // Set container name (that is the name of the main directory).
+    $containerName = $settings->get('azure_location');
+
+    // Try to create container
+    try{
+        // Create blob client.
+        $blobClient = BlobRestProxy::createBlobService($connectionString);
+        // Create container options object.
+        $createContainerOptions = new CreateContainerOptions();
+
+        // Set public access policy. Possible values are
+        // PublicAccessType::CONTAINER_AND_BLOBS and PublicAccessType::BLOBS_ONLY.
+        // CONTAINER_AND_BLOBS:
+        // Specifies full public read access for container and blob data.
+        // proxys can enumerate blobs within the container via anonymous
+        // request, but cannot enumerate containers within the storage account.
+        //
+        // BLOBS_ONLY:
+        // Specifies public read access for blobs. Blob data within this
+        // container can be read via anonymous request, but container data is not
+        // available. proxys cannot enumerate blobs within the container via
+        // anonymous request.
+        // If this value is not specified in the request, container data is
+        // private to the account owner.
+        $createContainerOptions->setPublicAccess(PublicAccessType::CONTAINER_AND_BLOBS);
+
+        // Set container metadata.
+        $createContainerOptions->addMetaData("key1", "value1");
+        $createContainerOptions->addMetaData("key2", "value2");
+
+        // Create the container (main directory in which we will upload files).
+        $blobClient->createContainer($containerName, $createContainerOptions);
+    }
+    catch(Exception $e){
+        // Handle exception based on error codes and messages.
+        // Error codes and messages are here:
+        // http://msdn.microsoft.com/en-us/library/windowsazure/dd179439.aspx
+        $code = $e->getCode();
+        $error_message = $e->getMessage();
+        // When container already exists the code is 409
+        if(!$code == 409){
+            return $code.": ".$error_message."<br />";
+        }
+    }
+
+    // Try to upload next part of the archive.
+    try {
+        // Open archive for read only.
+        $handler = fopen($archive_path . DIR_SEPARATOR . $backup_name, "r");
+
+        // If its not the first pass of upload process.
+        if(notEmptyTable()){
+            $counter = getCounter();
+            // Move the file pointer to the next part.
+            fseek($handler, ($counter - 1) * CHUNK_SIZE);
+        }
+        else{
+            // Create dummy file for cron purposes.
+            $dummy_handler = fopen($archive_path . DIR_SEPARATOR . $dummy_file, "w");
+            fclose($dummy_handler);
+            // Init counter and blocks array.
+            $blockIds = array();
+            $counter = 1;
+        }
+        // Set limit of blocks to upload
+        $cnt = $counter + $settings->get('upload_size');;
+        // Until the end of file or blocks limit. Read the file and make array of blocks (chunks).
+        while (!feof($handler) && $counter != $cnt )
+        {
+            // Make block id with $counter at the end.
+            $blockId = str_pad($counter, 6, "0", STR_PAD_LEFT);
+            $block = new Block();
+            $block -> setBlockId(base64_encode($blockId));
+            // To be uploaded.
+            $block -> setType("Uncommitted");
+            $blockIds[$counter - 1] = $block;
+
+            // Read part of the file.
+            $data = fread($handler, CHUNK_SIZE);
+            $blobClient -> createBlobBlock($containerName, $blobName, base64_encode($blockId), $data);
+            $counter++;
+        }
+
+        // If we reached the end of the archive.
+        if(feof($handler)){
+            // Close handler.
+            fclose($handler);
+            $results = getBlocks();
+            foreach($results as $res){
+              $temp = unserialize($res->blocks);
+              $blockIds = $temp + $blockIds;
+            }
+            ksort($blockIds);
+            // Commit all uploaded blocks to create the archive on the Azure server.
+            $blobClient->commitBlobBlocks($containerName, $blobName, $blockIds);
+            // Trunkate table with the block ids.
+            emptyTable();
+            // Remove archive and dummy file.
+            unlink($archive_path . DIR_SEPARATOR . $backup_name);
+            unlink($archive_path . DIR_SEPARATOR . $dummy_file);
+            return "Success";
+        }
+        else{
+            // Close handler.
+            fclose($handler);
+            // Update block ids list with the newly uploaded blocks.
+            $serialized_blocks = serialize($blockIds);
+            insertBlocks($serialized_blocks, $counter);
+            return $counter;
+        }
+    }
+    catch(Exception $e){
+        // Handle exception based on error codes and messages.
+        // Error codes and messages are here:
+        // http://msdn.microsoft.com/en-us/library/windowsazure/dd179439.aspx
+        $code = $e->getCode();
+        // Remove any data so we can start clear next time.
+        emptyTable();
+        unlink($archive_path . DIR_SEPARATOR . $backup_name);
+        unlink($archive_path . DIR_SEPARATOR . $dummy_file);
+        $error_message = $e->getMessage();
+        return $code.": ".$error_message."<br />";
+    }
+}
+
+/**
+ * Archives recursively given dir.
+ *
+ * @param string $backup_name
+ *   Name of the archive.
+ * @param string $read_path
+ *   Path to the directory to recursively archive.
+ * @param string $archive_path
+ *   Path to place the archive
+ */
+function archiveDir($backup_name, $read_path, $archive_path){
+    // Get real path for our folder
+    $rootPath = realpath($read_path);
+
+    // Initialize archive object
+    $zip = new ZipArchive();
+    $zip->open($archive_path . DIR_SEPARATOR .$backup_name, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    // Create recursive directory iterator
+    /** @var SplFileInfo[] $files */
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($rootPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    foreach ($files as $name => $file)
+    {
+        // Skip directories (they would be added automatically)
+        if (!$file->isDir())
+        {
+            // Get real and relative path for current file
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+            // Add current file to archive
+            $zip->addFile($filePath, $relativePath);
+        }
+    }
+
+    // Zip archive will be created only after closing object
+    $zip->close();
+}
+
+/**
+ * Trunkate azure_blob_storage_blocks table.
+ */
+function emptyTable() {
+    $connection = \Drupal::database();
+    $connection->truncate('azure_blob_storage_blocks')->execute();
+}
+
+/**
+ * Insert list with block Ids into azure_blob_storage_table.
+ *
+ * @param string $serialized_blocks
+ *   Serialized array with block Ids.
+ * @param integer $counter
+ *   Count of uploaded blocks until now.
+ */
+function insertBlocks($serialized_blocks, $counter){
+    $connection = \Drupal::database();
+    $connection->insert('azure_blob_storage_blocks')
+        ->fields([
+            'blocks' => $serialized_blocks,
+            'counter' => $counter,
+        ])
+        ->execute();
+}
+
+/**
+ * Gets block IDs list from azure_blob_storage_blocks table.
+ */
+function getBlocks(){
+    $connection = \Drupal::database();
+    return $connection->select('azure_blob_storage_blocks', 'asb')
+        ->fields('asb',[
+            'blocks',
+            'counter'
+        ])
+        ->execute()
+        ->fetchAll();
+}
+
+/**
+ * Gets last value of counter from azure_blob_storage_blocks table.
+ */
+function getCounter(){
+  $connection = \Drupal::database();
+  $query = $connection->select('azure_blob_storage_blocks', 'asb');
+  $query->addExpression('MAX(counter)', 'counter');
+  $result = $query->execute()->fetchAll();
+
+  return $result[0]->counter;
+}
+
+/**
+ *  Checks if there are records in the azure_blob_storage_blocks table.
+ */
+function notEmptyTable(){
+    $connection = \Drupal::database();
+
+    return $connection->select('azure_blob_storage_blocks', 'asb')
+        ->fields('asb',[
+            'counter'
+        ])
+        ->countQuery()->execute()->fetchField();
+}
+
+/**
+ *  Checks if there are records in the azure_blob_storage_blocks table.
+ */
+function testConnection(array &$form, FormStateInterface $form_state){
+
+  // Get acc name and key.
+  $ACC_NAME = $form_state->getValue('account_name');
+  $ACC_KEY = $form_state->getValue('account_key');
+
+  $connectionString = "DefaultEndpointsProtocol=https;AccountName=".$ACC_NAME.";AccountKey=".$ACC_KEY;
+
+  // Set container name (that is the name of the main directory).
+  $containerName = $form_state->getValue('azure_location');
+
+  // Try to create container
+  try{
+    // Create blob client.
+    $blobClient = BlobRestProxy::createBlobService($connectionString);
+    // Create container options object.
+    $createContainerOptions = new CreateContainerOptions();
+
+    // Set public access policy. Possible values are
+    // PublicAccessType::CONTAINER_AND_BLOBS and PublicAccessType::BLOBS_ONLY.
+    // CONTAINER_AND_BLOBS:
+    // Specifies full public read access for container and blob data.
+    // proxys can enumerate blobs within the container via anonymous
+    // request, but cannot enumerate containers within the storage account.
+    //
+    // BLOBS_ONLY:
+    // Specifies public read access for blobs. Blob data within this
+    // container can be read via anonymous request, but container data is not
+    // available. proxys cannot enumerate blobs within the container via
+    // anonymous request.
+    // If this value is not specified in the request, container data is
+    // private to the account owner.
+    $createContainerOptions->setPublicAccess(PublicAccessType::CONTAINER_AND_BLOBS);
+
+    // Set container metadata.
+    $createContainerOptions->addMetaData("key1", "value1");
+    $createContainerOptions->addMetaData("key2", "value2");
+
+    // Create the container (main directory in which we will upload files).
+    $blobClient->createContainer($containerName, $createContainerOptions);
+
+    $config = \Drupal::service('config.factory')->getEditable('azure_blob_storage.settings');
+    $config
+      ->set('account_name', $form_state->getValue('account_name'))
+      ->set('account_key', $form_state->getValue('account_key'))
+      ->set('read_path', $form_state->getValue('read_path'))
+      ->set('azure_location', $form_state->getValue('azure_location'))
+      ->set('upload_size', $form_state->getValue('upload_size'))
+      ->set('archive_path', $form_state->getValue('archive_path'))
+      ->save();
+    //\Drupal::formBuilder()->submitForm('azure_blob_storage_config_form', $form_state);
+
+    drupal_set_message(t('Connection to Azure Storage successful.'), 'status');
+  }
+  catch(Exception $e){
+    // Handle exception based on error codes and messages.
+    // Error codes and messages are here:
+    // http://msdn.microsoft.com/en-us/library/windowsazure/dd179439.aspx
+    $code = $e->getCode();
+    $error_message = $e->getMessage();
+    // When container already exists the code is 409
+    if(!$code == 409){
+      drupal_set_message(t('Unable to connect. Check log messages for details.'), 'error');
+      \Drupal::logger('azure_blob_storage')->error('Error while trying to connect: {message}', [
+        'message' => $e->getMessage(),
+      ]);
+    }
+    else{
+      $config = \Drupal::service('config.factory')->getEditable('azure_blob_storage.settings');
+      $config
+        ->set('account_name', $form_state->getValue('account_name'))
+        ->set('account_key', $form_state->getValue('account_key'))
+        ->set('read_path', $form_state->getValue('read_path'))
+        ->set('azure_location', $form_state->getValue('azure_location'))
+        ->set('upload_size', $form_state->getValue('upload_size'))
+        ->set('archive_path', $form_state->getValue('archive_path'))
+        ->save();
+
+      drupal_set_message(t('Connection to Azure Storage successful.'), 'status');
+    }
+  }
+}
