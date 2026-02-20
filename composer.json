@@ -26,7 +26,6 @@
         "drupal/core-recommended": "^10.2",
         "drupal/core-vendor-hardening": "^10.2",
         "drupal/entity_reference_revisions": "^1.11",
-        "drupal/flysystem_azure": "1.0.x-dev@dev",
         "drupal/gdoc_field": "^1.4",
         "drupal/h5p": "^2.0@alpha",
         "drupal/inline_entity_form": "^1.0@RC",

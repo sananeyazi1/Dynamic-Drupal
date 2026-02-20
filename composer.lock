@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9488fb70c16f5067b565362d3954b737",
+    "content-hash": "3375d953b7ffe9235570e820c8a8cb91",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1977,133 +1977,6 @@
             "homepage": "https://www.drupal.org/project/entity_reference_revisions",
             "support": {
                 "source": "https://git.drupalcode.org/project/entity_reference_revisions"
-            }
-        },
-        {
-            "name": "drupal/flysystem",
-            "version": "2.1.0-rc6",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/flysystem.git",
-                "reference": "2.1.0-rc6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/flysystem-2.1.0-rc6.zip",
-                "reference": "2.1.0-rc6",
-                "shasum": "9b75e51e349b71af85f3cefbfc3d5a906f9a6536"
-            },
-            "require": {
-                "drupal/core": "^9.5 || ^10.0",
-                "league/flysystem": "^1.0.3",
-                "league/flysystem-replicate-adapter": "~1.0",
-                "php": ">=8.1",
-                "twistor/flysystem-stream-wrapper": "^1.0.5"
-            },
-            "require-dev": {
-                "league/flysystem-memory": "~1.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.1.0-rc6",
-                    "datestamp": "1691587388",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "RC releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Drupal\\flysystem\\": "src/"
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "benjifisher",
-                    "homepage": "https://www.drupal.org/user/683300"
-                },
-                {
-                    "name": "bradjones1",
-                    "homepage": "https://www.drupal.org/user/405824"
-                },
-                {
-                    "name": "jungle",
-                    "homepage": "https://www.drupal.org/user/2919723"
-                },
-                {
-                    "name": "lhridley",
-                    "homepage": "https://www.drupal.org/user/1223730"
-                },
-                {
-                    "name": "mglaman",
-                    "homepage": "https://www.drupal.org/user/2416470"
-                },
-                {
-                    "name": "robbin.zhao",
-                    "homepage": "https://www.drupal.org/user/616818"
-                },
-                {
-                    "name": "twistor",
-                    "homepage": "https://www.drupal.org/user/473738"
-                },
-                {
-                    "name": "vijaycs85",
-                    "homepage": "https://www.drupal.org/user/93488"
-                }
-            ],
-            "description": "Provides access to various filesystem backends using Flysystem.",
-            "homepage": "https://www.drupal.org/project/flysystem",
-            "support": {
-                "source": "https://git.drupalcode.org/project/flysystem"
-            }
-        },
-        {
-            "name": "drupal/flysystem_azure",
-            "version": "dev-1.0.x",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/flysystem_azure.git",
-                "reference": "2d6b397a974be369f8850991b7bb42eb539904e7"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10",
-                "drupal/flysystem": "^2.1@RC",
-                "microsoft/azure-storage-blob": "^1.1"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.0.x": "1.0.x-dev"
-                },
-                "drupal": {
-                    "version": "1.0.x-dev",
-                    "datestamp": "1708617389",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Project has not opted into security advisory coverage!"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "BryanLund",
-                    "homepage": "https://www.drupal.org/user/3628719"
-                }
-            ],
-            "description": "Provides an Azure plugin for Flysystem.",
-            "homepage": "https://www.drupal.org/project/flysystem_azure",
-            "support": {
-                "source": "https://git.drupalcode.org/project/flysystem_azure"
             }
         },
         {
@@ -4139,56 +4012,6 @@
                 "source": "https://github.com/thephpleague/flysystem-azure-blob-storage/tree/master"
             },
             "time": "2018-07-14T10:20:00+00:00"
-        },
-        {
-            "name": "league/flysystem-replicate-adapter",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/flysystem-replicate-adapter.git",
-                "reference": "864e80409c0918b0ed6921c3941247017d9db77c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-replicate-adapter/zipball/864e80409c0918b0ed6921c3941247017d9db77c",
-                "reference": "864e80409c0918b0ed6921c3941247017d9db77c",
-                "shasum": ""
-            },
-            "require": {
-                "league/flysystem": "~1.0",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "~4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\Flysystem\\Replicate\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Frank de Jonge",
-                    "email": "info@frenky.net"
-                }
-            ],
-            "description": "Flysystem adapter for Replica's",
-            "support": {
-                "issues": "https://github.com/thephpleague/flysystem-replicate-adapter/issues",
-                "source": "https://github.com/thephpleague/flysystem-replicate-adapter/tree/master"
-            },
-            "time": "2015-08-18T21:07:17+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -8318,95 +8141,6 @@
             "time": "2024-09-09T17:55:12+00:00"
         },
         {
-            "name": "twistor/flysystem-stream-wrapper",
-            "version": "v1.0.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twistor/flysystem-stream-wrapper.git",
-                "reference": "c97389f188a6493759389861f9fc732652460c58"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twistor/flysystem-stream-wrapper/zipball/c97389f188a6493759389861f9fc732652460c58",
-                "reference": "c97389f188a6493759389861f9fc732652460c58",
-                "shasum": ""
-            },
-            "require": {
-                "league/flysystem": "^1.0.9",
-                "twistor/stream-util": "~1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Twistor\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Leppanen",
-                    "email": "chris.leppanen@gmail.com"
-                }
-            ],
-            "description": "Adapts Flysystem filesystems to PHP stream wrappers.",
-            "homepage": "http://github.com/twistor/flysystem-stream-wrapper",
-            "support": {
-                "issues": "https://github.com/twistor/flysystem-stream-wrapper/issues",
-                "source": "https://github.com/twistor/flysystem-stream-wrapper/tree/master"
-            },
-            "time": "2018-11-14T06:41:03+00:00"
-        },
-        {
-            "name": "twistor/stream-util",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twistor/stream-util.git",
-                "reference": "226e74e6234508a53639b960c4a2752aee61799a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twistor/stream-util/zipball/226e74e6234508a53639b960c4a2752aee61799a",
-                "reference": "226e74e6234508a53639b960c4a2752aee61799a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Twistor\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Leppanen",
-                    "email": "chris.leppanen@gmail.com"
-                }
-            ],
-            "description": "Helper utilities for dealing with streams.",
-            "homepage": "http://github.com/twistor/stream-util",
-            "support": {
-                "issues": "https://github.com/twistor/stream-util/issues",
-                "source": "https://github.com/twistor/stream-util/tree/master"
-            },
-            "time": "2015-06-12T11:33:28+00:00"
-        },
-        {
             "name": "webflo/drupal-finder",
             "version": "1.3.1",
             "source": {
@@ -8457,7 +8191,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "drupal/flysystem_azure": 20,
         "drupal/h5p": 15,
         "drupal/inline_entity_form": 5,
         "drupal/rest_entity_recursive": 5
